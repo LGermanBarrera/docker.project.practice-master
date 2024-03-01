@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+
+  selenoid:
+    network_mode: bridge
+    container_name: selenoid
+    image: "mag1art/selenoid:latest"
+    ports:
+      - "4444:4444"
+    volumes:
+      - "/Users/solvd/Documents/MyRepositories/docker.project.practice/:/etc/selenoid"
+      - "/Users/solvd/Documents/MyRepositories/docker.project.practice/video:/opt/selenoid/video"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      - OVERRIDE_VIDEO_OUTPUT_DIR=/Users/solvd/Documents/MyRepositories/docker.project.practice/video
+    command: [ "-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video" ]
+
+  selenoid-ui:
+    network_mode: bridge
+    container_name: selenoid-ui
+    image: "mag1art/selenoid-ui:latest"
+    ports:
+      - "8090:8080"
+    links:
+      - selenoid
+    command:
+      [ "--selenoid-uri", "http://selenoid:4444" ]
